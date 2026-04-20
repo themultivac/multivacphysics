@@ -1,1 +1,5 @@
 .vercel
+
+# macOS metadata files (resource forks)
+._*
+.DS_Store
