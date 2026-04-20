@@ -1,487 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Multivac Physics — Frontier Model Evaluation for Scientific Reasoning</title>
-  <meta name="description" content="We synthesize answers from every leading AI model on the hardest problems in physics. Decomposing claims. Surfacing truth. Showing our work.">
-  <meta property="og:title" content="Multivac Physics">
-  <meta property="og:description" content="Frontier model evaluation for scientific reasoning.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://multivacphysics.com">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multivac Physics — Cross-Family Peer Evaluation of LLM Physics Reasoning</title>
+    <meta name="description" content="Seven frontier LLMs derive graduate physics problems from first principles, then cross-examine each other claim by claim. 3 problems. 935 atomic claims. 17 confirmed errors. Open data.">
+    <meta property="og:title" content="Multivac Physics — What Seven Frontier LLMs Get Wrong About Graduate Physics">
+    <meta property="og:description" content="Independent, cross-family adversarial peer review of LLM derivations. Schwarzschild, Unruh, Casimir. Open methodology, raw data on GitHub.">
+    <meta property="og:type" content="website">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='%238B5CF6'/><text x='50' y='66' text-anchor='middle' font-family='Georgia,serif' font-size='58' fill='white' font-style='italic'>&#934;</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #050507; --surface: #0A0A0E; --surface-2: #111116;
+            --border: #1A1A22; --text: #F0F0F5; --text-dim: #8888A0; --text-muted: #4A4A5E;
+            --purple: #8B5CF6; --purple-bright: #A78BFA; --purple-glow: rgba(139,92,246,0.4);
+            --purple-subtle: rgba(139,92,246,0.08);
+            --green: #34D399; --blue: #60A5FA; --amber: #FBBF24; --pink: #F472B6; --orange: #FB923C;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', -apple-system, sans-serif;
+            --serif: 'Crimson Pro', Georgia, serif;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
-    :root {
-      --black: #000000;
-      --bg: #050505;
-      --surface: #0a0a0a;
-      --border: #141414;
-      --border-light: #1a1a1a;
-      --muted: #3f3f46;
-      --dim: #52525B;
-      --text: #a1a1aa;
-      --bright: #e4e4e7;
-      --white: #fafafa;
-      --accent: #8B5CF6;
-      --accent-dim: rgba(139, 92, 246, 0.15);
-      --accent-glow: rgba(139, 92, 246, 0.04);
-      --green: #22C55E;
-      --amber: #F59E0B;
-      --mono: 'JetBrains Mono', monospace;
-      --serif: 'EB Garamond', Georgia, serif;
-    }
+        #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+        .page { position: relative; z-index: 1; }
 
-    html { scroll-behavior: smooth; }
+        /* NAV */
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(20px); background: rgba(5,5,7,0.7); border-bottom: 1px solid transparent; transition: border-color .4s, background .4s; }
+        .nav.scrolled { border-bottom-color: var(--border); background: rgba(5,5,7,0.9); }
+        .nav-logo { font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: .12em; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo-phi { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--purple-bright)); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 15px; font-style: italic; font-weight: 500; color: #fff; box-shadow: 0 0 20px var(--purple-glow); animation: logoPulse 3s ease-in-out infinite; }
+        @keyframes logoPulse { 0%,100% { box-shadow: 0 0 20px var(--purple-glow); } 50% { box-shadow: 0 0 40px var(--purple-glow), 0 0 80px rgba(139,92,246,0.15); } }
+        .nav-logo .slash { color: var(--text-muted); font-weight: 400; margin: 0 2px; }
+        .nav-right { display: flex; align-items: center; gap: 28px; }
+        .nav-right a { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--text-muted); text-decoration: none; transition: color .2s; }
+        .nav-right a:hover { color: var(--text-dim); }
+        .nav-explore { color: var(--purple) !important; padding: 8px 18px; border: 1px solid rgba(139,92,246,0.3); border-radius: 6px; transition: all .2s !important; }
+        .nav-explore:hover { background: var(--purple-subtle) !important; border-color: var(--purple) !important; color: var(--purple-bright) !important; }
 
-    body {
-      background: var(--black);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 13px;
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
+        /* BUTTONS */
+        .btn { font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .08em; padding: 16px 32px; border-radius: 8px; text-decoration: none; transition: all .25s; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; border: none; }
+        .btn-primary { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #fff; box-shadow: 0 4px 24px rgba(139,92,246,0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(139,92,246,0.4), inset 0 1px 0 rgba(255,255,255,0.15); }
+        .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+        .btn-ghost:hover { border-color: var(--text-muted); color: var(--text); background: rgba(255,255,255,0.02); }
 
-    /* — Grid overlay for scientific feel — */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(139, 92, 246, 0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(139, 92, 246, 0.015) 1px, transparent 1px);
-      background-size: 80px 80px;
-      pointer-events: none;
-      z-index: 0;
-    }
+        /* HERO */
+        .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 40px 80px; position: relative; }
+        .hero-badge { font-family: var(--mono); font-size: 10px; letter-spacing: .3em; color: var(--purple); text-transform: uppercase; padding: 8px 20px; border: 1px solid rgba(139,92,246,0.2); border-radius: 100px; margin-bottom: 40px; background: rgba(139,92,246,0.05); opacity: 0; transform: translateY(20px); animation: fadeUp .8s .2s forwards; }
+        .hero h1 { font-family: var(--sans); font-size: clamp(42px, 7vw, 84px); font-weight: 900; letter-spacing: -.03em; line-height: 1.02; margin-bottom: 28px; max-width: 1000px; opacity: 0; transform: translateY(30px); animation: fadeUp .8s .4s forwards; }
+        .hero h1 .gradient { background: linear-gradient(135deg, var(--text) 0%, var(--purple-bright) 55%, var(--purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-sub { font-size: clamp(15px, 2vw, 18px); color: var(--text-dim); max-width: 640px; line-height: 1.75; font-weight: 400; margin-bottom: 48px; opacity: 0; transform: translateY(30px); animation: fadeUp .8s .6s forwards; }
+        .hero-ctas { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; opacity: 0; transform: translateY(30px); animation: fadeUp .8s .8s forwards; }
+        .hero-scroll { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); font-family: var(--mono); font-size: 10px; letter-spacing: .15em; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp .8s 1.2s forwards; }
+        .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--purple), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+        @keyframes scrollPulse { 0%,100% { opacity: .3; } 50% { opacity: 1; } }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 1;
-    }
+        /* STATS */
+        .stats-section { padding: 100px 40px; position: relative; }
+        .stats-section::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+        .stats-grid { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; text-align: center; }
+        .stat-item { opacity: 0; transform: translateY(40px); transition: all .6s cubic-bezier(.23,1,.32,1); }
+        .stat-item.visible { opacity: 1; transform: translateY(0); }
+        .stat-number { font-family: var(--sans); font-size: clamp(36px, 5vw, 56px); font-weight: 900; letter-spacing: -.02em; background: linear-gradient(180deg, var(--text) 30%, var(--text-dim)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; margin-bottom: 8px; }
+        .stat-label { font-family: var(--mono); font-size: 10px; letter-spacing: .2em; color: var(--text-muted); text-transform: uppercase; }
 
-    /* — Navigation — */
-    nav {
-      padding: 24px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid var(--border);
-    }
+        /* FRAMING BLOCK */
+        .framing-section { padding: 40px 40px 100px; }
+        .framing-card { max-width: 820px; margin: 0 auto; padding: 48px; border: 1px solid var(--border); border-radius: 20px; background: linear-gradient(180deg, var(--surface) 0%, rgba(10,10,14,0.4) 100%); }
+        .framing-block { display: flex; flex-direction: column; gap: 16px; }
+        .framing-label { font-family: var(--mono); font-size: 10px; letter-spacing: .3em; color: var(--text-muted); text-transform: uppercase; }
+        .framing-prose { font-family: var(--serif); line-height: 1.55; }
+        .framing-prose.primary { font-size: 22px; color: var(--text); font-weight: 400; }
+        .framing-prose.primary em { font-style: italic; color: var(--purple-bright); font-weight: 500; }
+        .framing-prose.secondary { font-size: 19px; color: var(--text-dim); font-weight: 400; }
+        .framing-prose.secondary em { font-style: italic; color: var(--purple); font-weight: 500; }
+        .framing-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent); margin: 36px 0; }
 
-    .nav-mark {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      color: var(--white);
-      text-decoration: none;
-    }
+        /* SECTION HEADS */
+        .section-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .3em; color: var(--purple); text-transform: uppercase; margin-bottom: 16px; }
+        .section-heading { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -.02em; margin-bottom: 16px; line-height: 1.15; }
+        .section-desc { font-size: 16px; color: var(--text-dim); max-width: 640px; margin: 0 auto 60px; line-height: 1.75; }
 
-    .nav-mark span {
-      color: var(--accent);
-      margin-right: 8px;
-    }
+        /* PROBLEMS */
+        .problems-section { padding: 120px 40px; text-align: center; }
+        .problems-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; text-align: left; }
+        .problem-card { padding: 36px; border: 1px solid var(--border); border-radius: 18px; background: var(--surface); transition: all .4s cubic-bezier(.23,1,.32,1); display: flex; flex-direction: column; opacity: 0; transform: translateY(40px); }
+        .problem-card.visible { opacity: 1; transform: translateY(0); }
+        .problem-card:hover { border-color: rgba(139,92,246,0.35); transform: translateY(-6px); box-shadow: 0 24px 60px rgba(0,0,0,0.35), 0 0 40px rgba(139,92,246,0.06); }
+        .problem-num { font-family: var(--mono); font-size: 11px; letter-spacing: .2em; color: var(--text-muted); margin-bottom: 20px; }
+        .problem-title { font-family: var(--sans); font-size: 24px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 12px; line-height: 1.2; }
+        .problem-formula { font-family: var(--mono); font-size: 15px; color: var(--purple); margin-bottom: 20px; letter-spacing: -.01em; }
+        .problem-desc { font-size: 14px; color: var(--text-dim); line-height: 1.7; margin-bottom: 28px; flex: 1; }
+        .problem-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 20px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+        .problem-stat { text-align: center; }
+        .problem-stat-num { font-family: var(--sans); font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; letter-spacing: -.01em; }
+        .problem-stat-lbl { font-family: var(--mono); font-size: 8px; letter-spacing: .18em; color: var(--text-muted); text-transform: uppercase; }
+        .problem-cta { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--purple); text-decoration: none; transition: color .2s; display: inline-flex; align-items: center; gap: 6px; }
+        .problem-cta:hover { color: var(--purple-bright); gap: 10px; }
 
-    .nav-link {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      color: var(--dim);
-      text-decoration: none;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
+        /* PROTOCOL */
+        .protocol-section { padding: 120px 40px; background: var(--surface); position: relative; }
+        .protocol-section::before, .protocol-section::after { content: ''; position: absolute; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+        .protocol-section::before { top: 0; } .protocol-section::after { bottom: 0; }
+        .protocol-header { text-align: center; max-width: 720px; margin: 0 auto 80px; }
+        .protocol-layers { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+        .layer-row { display: grid; grid-template-columns: 80px 240px 1fr; gap: 32px; padding: 28px 32px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg); transition: all .4s; opacity: 0; transform: translateY(30px); align-items: start; }
+        .layer-row.visible { opacity: 1; transform: translateY(0); }
+        .layer-row:hover { border-color: rgba(139,92,246,0.25); }
+        .layer-row.planned { border-style: dashed; opacity: 0; }
+        .layer-row.planned.visible { opacity: .7; }
+        .layer-row.planned:hover { opacity: 1; border-color: rgba(251,191,36,0.4); }
+        .layer-num { font-family: var(--mono); font-size: 22px; font-weight: 700; color: var(--purple); letter-spacing: -.02em; }
+        .layer-name-wrap { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .layer-name { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .14em; color: var(--text); text-transform: uppercase; }
+        .layer-badge { font-family: var(--mono); font-size: 8px; font-weight: 700; letter-spacing: .18em; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; background: rgba(251,191,36,0.12); color: var(--amber); border: 1px solid rgba(251,191,36,0.25); }
+        .layer-desc { font-size: 14px; color: var(--text-dim); line-height: 1.75; }
 
-    .nav-link:hover { color: var(--text); }
+        /* ROADMAP */
+        .roadmap-section { padding: 120px 40px; text-align: center; }
+        .roadmap-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; text-align: left; }
+        .roadmap-card { padding: 32px; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); transition: all .3s; opacity: 0; transform: translateY(30px); }
+        .roadmap-card.visible { opacity: 1; transform: translateY(0); }
+        .roadmap-card:hover { border-color: rgba(139,92,246,0.2); transform: translateY(-3px); }
+        .roadmap-tag { display: inline-block; font-family: var(--mono); font-size: 9px; letter-spacing: .2em; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 20px; font-weight: 700; }
+        .tag-now { background: rgba(52,211,153,0.12); color: var(--green); }
+        .tag-next { background: rgba(251,191,36,0.12); color: var(--amber); }
+        .tag-later { background: rgba(74,74,94,0.2); color: var(--text-dim); }
+        .roadmap-card h3 { font-size: 17px; font-weight: 700; letter-spacing: -.01em; margin-bottom: 10px; line-height: 1.3; }
+        .roadmap-card p { font-size: 13.5px; color: var(--text-dim); line-height: 1.7; }
 
-    /* — Hero — */
-    .hero {
-      padding: 120px 0 80px;
-      text-align: center;
-    }
+        /* CTA */
+        .cta-section { padding: 140px 40px; text-align: center; }
+        .cta-buttons-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 40px; }
 
-    .hero-label {
-      font-size: 9px;
-      letter-spacing: 0.35em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 32px;
-      display: block;
-    }
+        /* QUOTE */
+        .quote-section { padding: 100px 40px; text-align: center; border-top: 1px solid var(--border); }
+        .quote-mark { font-family: var(--serif); font-size: 80px; color: rgba(139,92,246,0.18); line-height: 1; margin-bottom: -20px; }
+        .quote-text { font-family: var(--serif); font-size: 22px; font-style: italic; color: var(--text-dim); max-width: 680px; margin: 0 auto 18px; line-height: 1.55; font-weight: 400; }
+        .quote-cite { font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: .08em; }
 
-    .hero h1 {
-      font-family: var(--serif);
-      font-size: clamp(36px, 6vw, 56px);
-      font-weight: 400;
-      color: var(--white);
-      line-height: 1.15;
-      margin-bottom: 24px;
-      letter-spacing: -0.01em;
-    }
+        /* FOOTER */
+        footer { padding: 40px 40px 56px; text-align: center; border-top: 1px solid var(--border); }
+        .footer-links { display: flex; justify-content: center; gap: 28px; margin-bottom: 18px; flex-wrap: wrap; }
+        .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; transition: color .2s; }
+        .footer-links a:hover { color: var(--text-dim); }
+        .footer-copy { font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: .08em; }
 
-    .hero-sub {
-      font-size: 13px;
-      color: var(--dim);
-      max-width: 520px;
-      margin: 0 auto;
-      line-height: 1.8;
-    }
-
-    /* — Divider — */
-    .divider {
-      border: none;
-      height: 1px;
-      background: var(--border);
-      margin: 0;
-    }
-
-    /* — Asimov block — */
-    .asimov {
-      padding: 80px 0;
-      text-align: center;
-      background: radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 70%);
-    }
-
-    .asimov-ref {
-      font-size: 9px;
-      color: var(--muted);
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      margin-bottom: 28px;
-    }
-
-    .asimov-quote {
-      font-family: var(--serif);
-      font-size: 20px;
-      color: var(--dim);
-      line-height: 1.9;
-      font-style: italic;
-      max-width: 440px;
-      margin: 0 auto;
-    }
-
-    .asimov-quote em {
-      display: block;
-      margin-top: 20px;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-style: normal;
-      letter-spacing: 0.15em;
-      color: var(--accent);
-      text-transform: uppercase;
-    }
-
-    .asimov-footer {
-      margin-top: 32px;
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-    }
-
-    /* — The Last Question section — */
-    .section {
-      padding: 80px 0;
-    }
-
-    .section-label {
-      font-size: 9px;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--dim);
-      margin-bottom: 12px;
-    }
-
-    .section h2 {
-      font-family: var(--serif);
-      font-size: 28px;
-      font-weight: 400;
-      color: var(--white);
-      margin-bottom: 20px;
-    }
-
-    .section p {
-      color: var(--text);
-      line-height: 1.8;
-      max-width: 600px;
-    }
-
-    .section p + p {
-      margin-top: 16px;
-    }
-
-    /* — Protocol card — */
-    .protocol {
-      margin-top: 48px;
-      border: 1px solid var(--border-light);
-      background: var(--surface);
-    }
-
-    .protocol-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .protocol-title {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-
-    .protocol-status {
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--amber);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .protocol-status::before {
-      content: '';
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--amber);
-      display: inline-block;
-    }
-
-    .protocol-body {
-      padding: 24px;
-    }
-
-    .protocol-row {
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 11px;
-    }
-
-    .protocol-row:last-child { border-bottom: none; }
-
-    .protocol-key {
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      font-size: 9px;
-      padding-top: 2px;
-    }
-
-    .protocol-val {
-      color: var(--text);
-    }
-
-    /* — Reports section — */
-    .report-card {
-      margin-top: 32px;
-      border: 1px solid var(--border-light);
-      padding: 32px;
-      background: var(--surface);
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .report-card h3 {
-      font-family: var(--serif);
-      font-size: 18px;
-      font-weight: 400;
-      color: var(--bright);
-      margin-bottom: 8px;
-    }
-
-    .report-card p {
-      font-size: 11px;
-      color: var(--dim);
-      max-width: 400px;
-      line-height: 1.7;
-    }
-
-    .report-tag {
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--dim);
-      border: 1px solid var(--border-light);
-      padding: 4px 12px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    /* — Footer — */
-    footer {
-      padding: 48px 0;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .footer-left {
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
-    .footer-left a {
-      color: var(--dim);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .footer-left a:hover { color: var(--text); }
-
-    .footer-right {
-      font-size: 9px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-    }
-
-    /* — Fade-in animation — */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(12px);
-      animation: fadeUp 0.6s ease forwards;
-    }
-
-    .fade-in:nth-child(2) { animation-delay: 0.1s; }
-    .fade-in:nth-child(3) { animation-delay: 0.2s; }
-    .fade-in:nth-child(4) { animation-delay: 0.3s; }
-
-    @keyframes fadeUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* — Responsive — */
-    @media (max-width: 600px) {
-      .hero { padding: 80px 0 60px; }
-      .section { padding: 60px 0; }
-      .protocol-row { grid-template-columns: 1fr; gap: 4px; }
-      .report-card { flex-direction: column; gap: 16px; }
-      footer { flex-direction: column; gap: 12px; text-align: center; }
-    }
-  </style>
+        @media (max-width: 900px) {
+            .problems-grid { grid-template-columns: 1fr; }
+            .roadmap-grid { grid-template-columns: 1fr; }
+            .layer-row { grid-template-columns: 60px 1fr; gap: 16px 20px; padding: 22px 22px; }
+            .layer-desc { grid-column: 1 / -1; }
+            .layer-name-wrap { grid-column: 2; }
+        }
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+            .hero { padding: 100px 24px 60px; }
+            .nav { padding: 16px 20px; }
+            .nav-right { gap: 16px; }
+            .nav-right a:not(.nav-explore) { display: none; }
+            .framing-card { padding: 32px 24px; }
+            .framing-prose.primary { font-size: 19px; } .framing-prose.secondary { font-size: 17px; }
+        }
+    </style>
 </head>
 <body>
-
-  <div class="container">
-
-    <!-- Nav -->
-    <nav>
-      <a href="/" class="nav-mark"><span>◈</span>MULTIVAC PHYSICS</a>
-      <a href="https://themultivac.com" class="nav-link">← The Multivac</a>
+<canvas id="bg-canvas"></canvas>
+<div class="page">
+    <nav class="nav" id="nav">
+        <a href="/" class="nav-logo"><span class="logo-phi">&#934;</span>MULTIVAC<span class="slash">/</span>PHYSICS</a>
+        <div class="nav-right">
+            <a href="#problems">Problems</a>
+            <a href="#protocol">Protocol</a>
+            <a href="https://github.com/themultivac/multivac-evaluation">GitHub</a>
+            <a href="https://themultivac.com" class="nav-explore">The Multivac &rarr;</a>
+        </div>
     </nav>
 
-    <!-- Hero -->
-    <div class="hero">
-      <span class="hero-label fade-in">Frontier Model Evaluation for Scientific Reasoning</span>
-      <h1 class="fade-in">What is true?</h1>
-      <p class="hero-sub fade-in">
-        We synthesize answers from every leading AI model on the hardest problems in physics.
-        Decomposing claims. Surfacing convergence and disagreement. Showing our work.
-      </p>
-    </div>
+    <section class="hero">
+        <div class="hero-badge">Independent Cross-Family Peer Evaluation</div>
+        <h1><span class="gradient">What seven frontier LLMs get wrong about graduate physics.</span></h1>
+        <p class="hero-sub">Seven models from seven different labs derive the same physics problem from first principles. Then they cross-examine each other's derivations, claim by claim. Every model judges. No lab sits in judgment of itself. Open data. Transparent methodology.</p>
+        <div class="hero-ctas">
+            <a href="#problems" class="btn btn-primary">Read the Problems &rarr;</a>
+            <a href="https://github.com/themultivac/multivac-evaluation" class="btn btn-ghost">GitHub Repo &#8599;</a>
+        </div>
+        <div class="hero-scroll"><span>SCROLL</span><div class="scroll-line"></div></div>
+    </section>
 
-    <hr class="divider">
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item" data-reveal><div class="stat-number" data-count="3">0</div><div class="stat-label">Problems</div></div>
+            <div class="stat-item" data-reveal><div class="stat-number" data-count="7">0</div><div class="stat-label">Contestants</div></div>
+            <div class="stat-item" data-reveal><div class="stat-number" data-count="975" data-format="comma">0</div><div class="stat-label">Atomic Claims</div></div>
+            <div class="stat-item" data-reveal><div class="stat-number" data-count="17">0</div><div class="stat-label">Errors Confirmed</div></div>
+        </div>
+    </section>
 
-    <!-- Asimov -->
-    <div class="asimov">
-      <div class="asimov-ref">The Last Question · Isaac Asimov · 1956</div>
-      <div class="asimov-quote">
-        "How may entropy be reversed?"
-        <em>Insufficient data for meaningful answer.</em>
-      </div>
-      <div class="asimov-footer">We keep asking. The data accumulates.</div>
-    </div>
+    <section class="framing-section">
+        <div class="framing-card" data-reveal>
+            <div class="framing-block">
+                <div class="framing-label">What this is</div>
+                <p class="framing-prose primary">An independent, cross-family peer-evaluation protocol for LLM physics reasoning. We surface where frontier models <em>converge</em>, where they <em>disagree</em>, and where adversarial peers from different families flag each other's steps as errors &mdash; with the raw data and methodology fully open for anyone to audit or extend.</p>
+            </div>
+            <div class="framing-divider"></div>
+            <div class="framing-block">
+                <div class="framing-label">What this isn't</div>
+                <p class="framing-prose secondary">A truth oracle. We do not symbolically verify algebra (<em>Layer 3, planned</em>). We do not have expert physicists in the loop (<em>future work</em>). We do not grade proofs against Birkhoff's theorem. What we do is give you the strongest version of multi-judge LLM evaluation that can be built today &mdash; and the commitment to strengthening it toward formal verification over time.</p>
+            </div>
+        </div>
+    </section>
 
-    <hr class="divider">
+    <section class="problems-section" id="problems">
+        <div class="section-eyebrow">The Last Question &mdash; Series</div>
+        <h2 class="section-heading">Three problems. Seven contestants each.</h2>
+        <p class="section-desc">Each problem was posed to seven frontier LLMs from seven different labs, their derivations decomposed into atomic claims by a universal decomposer, then stress-tested by independent adversarial peers from different model families.</p>
+        <div class="problems-grid">
+            <article class="problem-card" data-reveal>
+                <div class="problem-num">&#8470; 001</div>
+                <h3 class="problem-title">The Schwarzschild Radius</h3>
+                <div class="problem-formula">r_s = 2GM / c&sup2;</div>
+                <p class="problem-desc">Derive the radius at which the Schwarzschild metric becomes coordinate-singular, starting from the Einstein field equations in vacuum. Textbook general relativity, 7/7 reached the final answer.</p>
+                <div class="problem-stats">
+                    <div class="problem-stat"><div class="problem-stat-num">14</div><div class="problem-stat-lbl">Flagged</div></div>
+                    <div class="problem-stat"><div class="problem-stat-num">4</div><div class="problem-stat-lbl">Confirmed</div></div>
+                    <div class="problem-stat"><div class="problem-stat-num">28.6%</div><div class="problem-stat-lbl">Rate</div></div>
+                </div>
+                <a href="problems/schwarzschild.html" class="problem-cta">Read the analysis &rarr;</a>
+            </article>
+            <article class="problem-card" data-reveal>
+                <div class="problem-num">&#8470; 002</div>
+                <h3 class="problem-title">The Unruh Temperature</h3>
+                <div class="problem-formula">T = &#8463;a / (2&pi; c k_B)</div>
+                <p class="problem-desc">Starting from a massless scalar field in the Minkowski vacuum, derive the thermal spectrum an accelerating observer reads out via Bogoliubov transformation. Two-part QFT in curved spacetime, 6/7 completed.</p>
+                <div class="problem-stats">
+                    <div class="problem-stat"><div class="problem-stat-num">21</div><div class="problem-stat-lbl">Flagged</div></div>
+                    <div class="problem-stat"><div class="problem-stat-num">7</div><div class="problem-stat-lbl">Confirmed</div></div>
+                    <div class="problem-stat"><div class="problem-stat-num">33.3%</div><div class="problem-stat-lbl">Rate</div></div>
+                </div>
+                <a href="problems/rindler-unruh.html" class="problem-cta">Read the analysis &rarr;</a>
+            </article>
+            <article class="problem-card" data-reveal>
+                <div class="problem-num">&#8470; 003</div>
+                <h3 class="problem-title">The Casimir Force</h3>
+                <div class="problem-formula">F/A = -&pi;&sup2; &#8463; c / (240 d&#8308;)</div>
+                <p class="problem-desc">Derive the attractive force between two conducting plates from the quantized EM vacuum, choosing a regularization scheme and extracting the finite part. Graduate QFT with a regulator choice, 7/7 attempted.</p>
+                <div class="problem-stats">
+                    <div class="problem-stat"><div class="problem-stat-num">20</div><div class="problem-stat-lbl">Flagged</div></div>
+                    <div class="problem-stat"><div class="problem-stat-num">6</div><div class="problem-stat-lbl">Confirmed</div></div>
+                    <div class="problem-stat"><div class="problem-stat-num">30.0%</div><div class="problem-stat-lbl">Rate</div></div>
+                </div>
+                <a href="problems/casimir.html" class="problem-cta">Read the analysis &rarr;</a>
+            </article>
+        </div>
+    </section>
 
-    <!-- The Last Question -->
-    <div class="section">
-      <div class="section-label">The Last Question</div>
-      <h2>One problem. Every frontier model. Full transparency.</h2>
-      <p>
-        A single hard physics problem — open or partially open — attacked by the synthesis protocol in real time. Five frontier models generate independent answers. Claims are decomposed into atomic, verifiable units. Convergence and divergence are made visible. The adversarial layer stress-tests every derivation.
-      </p>
-      <p>
-        This is not a benchmark. It is a live, evolving demonstration of what AI can and cannot do when confronted with problems that matter.
-      </p>
-
-      <div class="protocol">
+    <section class="protocol-section" id="protocol">
         <div class="protocol-header">
-          <div class="protocol-title">Synthesis Protocol v0</div>
-          <div class="protocol-status">Initializing</div>
+            <div class="section-eyebrow">The Protocol</div>
+            <h2 class="section-heading">Four layers of independent judgment.</h2>
+            <p class="section-desc" style="margin-bottom:0;">No model judges itself or its own family. No final-answer check stands alone. Every intermediate step is stress-tested, and flagged errors are confirmed by a second adversary from yet another family.</p>
         </div>
-        <div class="protocol-body">
-          <div class="protocol-row">
-            <div class="protocol-key">Models</div>
-            <div class="protocol-val">Claude · GPT · Gemini · DeepSeek · Qwen — one per family</div>
-          </div>
-          <div class="protocol-row">
-            <div class="protocol-key">Layers</div>
-            <div class="protocol-val">Independent generation → Claim decomposition → Adversarial stress test</div>
-          </div>
-          <div class="protocol-row">
-            <div class="protocol-key">Output</div>
-            <div class="protocol-val">Structured claims with provenance, dependency graphs, confidence scores</div>
-          </div>
-          <div class="protocol-row">
-            <div class="protocol-key">Validation</div>
-            <div class="protocol-val">Closed problems with known answers — protocol must beat majority vote</div>
-          </div>
-          <div class="protocol-row">
-            <div class="protocol-key">First Problem</div>
-            <div class="protocol-val" style="color: var(--accent);">Coming Q2 2026</div>
-          </div>
+        <div class="protocol-layers">
+            <div class="layer-row" data-reveal>
+                <div class="layer-num">01</div>
+                <div class="layer-name-wrap"><span class="layer-name">Generation</span></div>
+                <div class="layer-desc">Seven frontier LLMs (Claude, GPT, Gemini, Grok, DeepSeek, Qwen, o3-mini) each derive the full problem independently. No model sees any other's response. Identical prompt. Identical parameters.</div>
+            </div>
+            <div class="layer-row" data-reveal>
+                <div class="layer-num">02</div>
+                <div class="layer-name-wrap"><span class="layer-name">Decomposition</span></div>
+                <div class="layer-desc">A universal decomposer (Claude Opus 4.6) breaks each derivation into atomic, individually verifiable claims &mdash; preserving the original author's errors verbatim. Every claim is tagged by type: definition, derivation step, invoked result, assumption.</div>
+            </div>
+            <div class="layer-row" data-reveal>
+                <div class="layer-num">04</div>
+                <div class="layer-name-wrap"><span class="layer-name">Adversarial Review</span></div>
+                <div class="layer-desc">Two adversaries from different model families stress-test each claim: CONFIRMED, ERROR, UNJUSTIFIED, or INCOMPLETE. A model cannot adversarially review its own family. Verdicts are parsed, validated, and preserved.</div>
+            </div>
+            <div class="layer-row" data-reveal>
+                <div class="layer-num">04b</div>
+                <div class="layer-name-wrap"><span class="layer-name">Cross-Family Confirmation</span></div>
+                <div class="layer-desc">Every ERROR verdict gets re-judged by a third adversary from a family different from both the contestant and the original reviewer. Only errors confirmed by both adversaries are counted as real.</div>
+            </div>
+            <div class="layer-row planned" data-reveal>
+                <div class="layer-num">03</div>
+                <div class="layer-name-wrap"><span class="layer-name">Symbolic Verification</span><span class="layer-badge">Planned</span></div>
+                <div class="layer-desc">SymPy-based formal verification of algebraic claims: Christoffel symbols, Ricci tensor components, dimensional consistency, index contractions. The bridge between LLM consensus and mathematical correctness. Under active development.</div>
+            </div>
         </div>
-      </div>
-    </div>
+    </section>
 
-    <hr class="divider">
-
-    <!-- Reports -->
-    <div class="section">
-      <div class="section-label">Reports</div>
-      <h2>State of Physics AI</h2>
-      <p>
-        Quarterly synthesis report evaluating every frontier and leading open-weight model on graduate-level physics across six domains: mechanics, electromagnetism, quantum mechanics, thermodynamics, relativity, and statistical mechanics. Closed-problem validation with ground truth. Free to read.
-      </p>
-
-      <div class="report-card">
-        <div>
-          <h3>State of Physics AI — Q1 2026</h3>
-          <p>
-            12–15 frontier and open-weight models. 30 closed problems across 6 physics domains.
-            Synthesis protocol v0 vs. majority vote comparison. Which models reason about physics, and which merely pattern-match?
-          </p>
+    <section class="roadmap-section">
+        <div class="section-eyebrow">The Path Forward</div>
+        <h2 class="section-heading">From consensus to verification.</h2>
+        <p class="section-desc">Multivac is an evaluation platform, not a benchmark. Independent cross-family judgment is the mechanism. Symbolic verification strengthens the signal. Expert review grounds it. More problems test its reach.</p>
+        <div class="roadmap-grid">
+            <div class="roadmap-card" data-reveal>
+                <span class="roadmap-tag tag-now">Now &middot; Live</span>
+                <h3>Cross-family adversarial confirmation</h3>
+                <p>Seven contestants, two-stage adversarial stress-testing, parse-validated verdicts. Three graduate physics problems published with full raw data on GitHub.</p>
+            </div>
+            <div class="roadmap-card" data-reveal>
+                <span class="roadmap-tag tag-next">Next &middot; Weeks</span>
+                <h3>Layer 3 &mdash; Symbolic verification</h3>
+                <p>SymPy integration for algebra, dimensional analysis, tensor manipulation. Claim-level machine-checking. Moves us from inter-LLM agreement toward formal correctness on verifiable steps.</p>
+            </div>
+            <div class="roadmap-card" data-reveal>
+                <span class="roadmap-tag tag-later">Later &middot; Months</span>
+                <h3>Expert review integration</h3>
+                <p>Domain physicists sign derivations with cryptographic provenance. Experimental databases linked to measurable claims. Open preprint companion at arXiv:cs.AI.</p>
+            </div>
         </div>
-        <div class="report-tag">Q2 2026</div>
-      </div>
-    </div>
+    </section>
 
-    <hr class="divider">
+    <section class="cta-section">
+        <div class="section-eyebrow">The Data is Open</div>
+        <h2 class="section-heading">Audit it. Break it. Build on it.</h2>
+        <p class="section-desc">Every Layer 1 response, every decomposed claim, every adversarial verdict, every confirmation &mdash; on GitHub under MIT license. If you find an error in our methodology or our physics, we would rather be corrected than be wrong.</p>
+        <div class="cta-buttons-row">
+            <a href="https://github.com/themultivac/multivac-evaluation" class="btn btn-primary">GitHub Repo &#8599;</a>
+            <a href="mailto:yash@themultivac.com" class="btn btn-ghost">yash@themultivac.com</a>
+        </div>
+    </section>
 
-    <!-- Footer -->
+    <section class="quote-section">
+        <div class="quote-mark">&ldquo;</div>
+        <p class="quote-text">The last question was asked for the first time, half in jest, on May 21, 2061, at a time when humanity first stepped into the light.</p>
+        <p class="quote-cite">&mdash; Isaac Asimov, &ldquo;The Last Question&rdquo; (1956)</p>
+    </section>
+
     <footer>
-      <div class="footer-left">
-        Part of <a href="https://themultivac.com">The Multivac</a> · Built by Yash Darji
-      </div>
-      <div class="footer-right">2026</div>
+        <div class="footer-links">
+            <a href="https://themultivac.com">The Multivac</a>
+            <a href="https://github.com/themultivac/multivac-evaluation">GitHub</a>
+            <a href="https://themultivac.substack.com">Substack</a>
+            <a href="https://x.com/themultivac_">X / Twitter</a>
+            <a href="mailto:yash@themultivac.com">Email</a>
+        </div>
+        <div class="footer-copy">Independent evaluation &middot; Open data &middot; No affiliations</div>
     </footer>
+</div>
 
-  </div>
-
+<script>
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');let particles=[],mouse={x:-1e3,y:-1e3};
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}resize();
+window.addEventListener('resize',resize);document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+class Particle{constructor(){this.reset()}reset(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*1.5+.3;this.speedX=(Math.random()-.5)*.15;this.speedY=(Math.random()-.5)*.15;this.opacity=Math.random()*.25+.05}update(){this.x+=this.speedX;this.y+=this.speedY;const dx=mouse.x-this.x,dy=mouse.y-this.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<150){this.x-=dx*.005;this.y-=dy*.005;this.opacity=Math.min(this.opacity+.01,.5)}if(this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height)this.reset()}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(139,92,246,${this.opacity})`;ctx.fill()}}
+for(let i=0;i<80;i++)particles.push(new Particle());
+function animateParticles(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw()});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<100){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(139,92,246,${.04*(1-dist/100)})`;ctx.lineWidth=.5;ctx.stroke()}}requestAnimationFrame(animateParticles)}animateParticles();
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50)});
+const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');entry.target.querySelectorAll('[data-count]').forEach(el=>{const target=parseInt(el.dataset.count),format=el.dataset.format==='comma',duration=1500,start=performance.now();function tick(now){const elapsed=now-start,progress=Math.min(elapsed/duration,1),eased=1-Math.pow(1-progress,3),current=Math.round(eased*target);el.textContent=format?current.toLocaleString():current;if(progress<1)requestAnimationFrame(tick)}requestAnimationFrame(tick)});observer.unobserve(entry.target)}})},{threshold:.2});
+document.querySelectorAll('[data-reveal],.stat-item,.problem-card,.roadmap-card,.layer-row').forEach(el=>observer.observe(el));
+</script>
 </body>
 </html>

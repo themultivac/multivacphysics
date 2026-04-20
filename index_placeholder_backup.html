@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multivac Physics — Frontier Model Evaluation for Scientific Reasoning</title>
+  <meta name="description" content="We synthesize answers from every leading AI model on the hardest problems in physics. Decomposing claims. Surfacing truth. Showing our work.">
+  <meta property="og:title" content="Multivac Physics">
+  <meta property="og:description" content="Frontier model evaluation for scientific reasoning.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://multivacphysics.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #000000;
+      --bg: #050505;
+      --surface: #0a0a0a;
+      --border: #141414;
+      --border-light: #1a1a1a;
+      --muted: #3f3f46;
+      --dim: #52525B;
+      --text: #a1a1aa;
+      --bright: #e4e4e7;
+      --white: #fafafa;
+      --accent: #8B5CF6;
+      --accent-dim: rgba(139, 92, 246, 0.15);
+      --accent-glow: rgba(139, 92, 246, 0.04);
+      --green: #22C55E;
+      --amber: #F59E0B;
+      --mono: 'JetBrains Mono', monospace;
+      --serif: 'EB Garamond', Georgia, serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* — Grid overlay for scientific feel — */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(139, 92, 246, 0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139, 92, 246, 0.015) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* — Navigation — */
+    nav {
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-mark {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .nav-mark span {
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    .nav-link {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover { color: var(--text); }
+
+    /* — Hero — */
+    .hero {
+      padding: 120px 0 80px;
+      text-align: center;
+    }
+
+    .hero-label {
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 32px;
+      display: block;
+    }
+
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: 400;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      color: var(--dim);
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* — Divider — */
+    .divider {
+      border: none;
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    /* — Asimov block — */
+    .asimov {
+      padding: 80px 0;
+      text-align: center;
+      background: radial-gradient(ellipse at center, var(--accent-glow) 0%, transparent 70%);
+    }
+
+    .asimov-ref {
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .asimov-quote {
+      font-family: var(--serif);
+      font-size: 20px;
+      color: var(--dim);
+      line-height: 1.9;
+      font-style: italic;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .asimov-quote em {
+      display: block;
+      margin-top: 20px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-style: normal;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .asimov-footer {
+      margin-top: 32px;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* — The Last Question section — */
+    .section {
+      padding: 80px 0;
+    }
+
+    .section-label {
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 12px;
+    }
+
+    .section h2 {
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+
+    .section p {
+      color: var(--text);
+      line-height: 1.8;
+      max-width: 600px;
+    }
+
+    .section p + p {
+      margin-top: 16px;
+    }
+
+    /* — Protocol card — */
+    .protocol {
+      margin-top: 48px;
+      border: 1px solid var(--border-light);
+      background: var(--surface);
+    }
+
+    .protocol-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .protocol-title {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .protocol-status {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--amber);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .protocol-status::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--amber);
+      display: inline-block;
+    }
+
+    .protocol-body {
+      padding: 24px;
+    }
+
+    .protocol-row {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+    }
+
+    .protocol-row:last-child { border-bottom: none; }
+
+    .protocol-key {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 9px;
+      padding-top: 2px;
+    }
+
+    .protocol-val {
+      color: var(--text);
+    }
+
+    /* — Reports section — */
+    .report-card {
+      margin-top: 32px;
+      border: 1px solid var(--border-light);
+      padding: 32px;
+      background: var(--surface);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .report-card h3 {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--bright);
+      margin-bottom: 8px;
+    }
+
+    .report-card p {
+      font-size: 11px;
+      color: var(--dim);
+      max-width: 400px;
+      line-height: 1.7;
+    }
+
+    .report-tag {
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+      border: 1px solid var(--border-light);
+      padding: 4px 12px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* — Footer — */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-left {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .footer-left a {
+      color: var(--dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-left a:hover { color: var(--text); }
+
+    .footer-right {
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* — Fade-in animation — */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    .fade-in:nth-child(2) { animation-delay: 0.1s; }
+    .fade-in:nth-child(3) { animation-delay: 0.2s; }
+    .fade-in:nth-child(4) { animation-delay: 0.3s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* — Responsive — */
+    @media (max-width: 600px) {
+      .hero { padding: 80px 0 60px; }
+      .section { padding: 60px 0; }
+      .protocol-row { grid-template-columns: 1fr; gap: 4px; }
+      .report-card { flex-direction: column; gap: 16px; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Nav -->
+    <nav>
+      <a href="/" class="nav-mark"><span>◈</span>MULTIVAC PHYSICS</a>
+      <a href="https://themultivac.com" class="nav-link">← The Multivac</a>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero">
+      <span class="hero-label fade-in">Frontier Model Evaluation for Scientific Reasoning</span>
+      <h1 class="fade-in">What is true?</h1>
+      <p class="hero-sub fade-in">
+        We synthesize answers from every leading AI model on the hardest problems in physics.
+        Decomposing claims. Surfacing convergence and disagreement. Showing our work.
+      </p>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Asimov -->
+    <div class="asimov">
+      <div class="asimov-ref">The Last Question · Isaac Asimov · 1956</div>
+      <div class="asimov-quote">
+        "How may entropy be reversed?"
+        <em>Insufficient data for meaningful answer.</em>
+      </div>
+      <div class="asimov-footer">We keep asking. The data accumulates.</div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- The Last Question -->
+    <div class="section">
+      <div class="section-label">The Last Question</div>
+      <h2>One problem. Every frontier model. Full transparency.</h2>
+      <p>
+        A single hard physics problem — open or partially open — attacked by the synthesis protocol in real time. Five frontier models generate independent answers. Claims are decomposed into atomic, verifiable units. Convergence and divergence are made visible. The adversarial layer stress-tests every derivation.
+      </p>
+      <p>
+        This is not a benchmark. It is a live, evolving demonstration of what AI can and cannot do when confronted with problems that matter.
+      </p>
+
+      <div class="protocol">
+        <div class="protocol-header">
+          <div class="protocol-title">Synthesis Protocol v0</div>
+          <div class="protocol-status">Initializing</div>
+        </div>
+        <div class="protocol-body">
+          <div class="protocol-row">
+            <div class="protocol-key">Models</div>
+            <div class="protocol-val">Claude · GPT · Gemini · DeepSeek · Qwen — one per family</div>
+          </div>
+          <div class="protocol-row">
+            <div class="protocol-key">Layers</div>
+            <div class="protocol-val">Independent generation → Claim decomposition → Adversarial stress test</div>
+          </div>
+          <div class="protocol-row">
+            <div class="protocol-key">Output</div>
+            <div class="protocol-val">Structured claims with provenance, dependency graphs, confidence scores</div>
+          </div>
+          <div class="protocol-row">
+            <div class="protocol-key">Validation</div>
+            <div class="protocol-val">Closed problems with known answers — protocol must beat majority vote</div>
+          </div>
+          <div class="protocol-row">
+            <div class="protocol-key">First Problem</div>
+            <div class="protocol-val" style="color: var(--accent);">Coming Q2 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Reports -->
+    <div class="section">
+      <div class="section-label">Reports</div>
+      <h2>State of Physics AI</h2>
+      <p>
+        Quarterly synthesis report evaluating every frontier and leading open-weight model on graduate-level physics across six domains: mechanics, electromagnetism, quantum mechanics, thermodynamics, relativity, and statistical mechanics. Closed-problem validation with ground truth. Free to read.
+      </p>
+
+      <div class="report-card">
+        <div>
+          <h3>State of Physics AI — Q1 2026</h3>
+          <p>
+            12–15 frontier and open-weight models. 30 closed problems across 6 physics domains.
+            Synthesis protocol v0 vs. majority vote comparison. Which models reason about physics, and which merely pattern-match?
+          </p>
+        </div>
+        <div class="report-tag">Q2 2026</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-left">
+        Part of <a href="https://themultivac.com">The Multivac</a> · Built by Yash Darji
+      </div>
+      <div class="footer-right">2026</div>
+    </footer>
+
+  </div>
+
+</body>
+</html>

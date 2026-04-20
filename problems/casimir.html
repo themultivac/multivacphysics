@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Casimir Force &mdash; Multivac Physics &#8470;003</title>
+    <meta name="description" content="Seven frontier LLMs derive the Casimir force between parallel conducting plates. What cross-family adversarial peer review caught.">
+    <meta property="og:title" content="The Casimir Force &mdash; Multivac Physics &#8470;003">
+    <meta property="og:description" content="Cross-family adversarial peer review of seven LLMs deriving F/A = -&pi;&sup2;&#8463;c/(240d&#8308;). 20 flagged errors, 6 confirmed under independent re-review.">
+    <meta property="og:type" content="article">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='%238B5CF6'/><text x='50' y='66' text-anchor='middle' font-family='Georgia,serif' font-size='58' fill='white' font-style='italic'>&#934;</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;800;900&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #050507; --surface: #0A0A0E; --surface-2: #111116;
+            --border: #1A1A22; --text: #F0F0F5; --text-dim: #8888A0; --text-muted: #4A4A5E;
+            --purple: #8B5CF6; --purple-bright: #A78BFA; --purple-glow: rgba(139,92,246,0.4);
+            --purple-subtle: rgba(139,92,246,0.08);
+            --green: #34D399; --blue: #60A5FA; --amber: #FBBF24; --pink: #F472B6; --orange: #FB923C;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', -apple-system, sans-serif;
+            --serif: 'Crimson Pro', Georgia, serif;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--sans); background: var(--bg); color: var(--text); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+        #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+        .page { position: relative; z-index: 1; }
+
+        .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(20px); background: rgba(5,5,7,0.7); border-bottom: 1px solid transparent; transition: border-color .4s, background .4s; }
+        .nav.scrolled { border-bottom-color: var(--border); background: rgba(5,5,7,0.9); }
+        .nav-left { display: flex; align-items: center; gap: 24px; }
+        .nav-logo { font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: .12em; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo-phi { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, var(--purple), var(--purple-bright)); display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: 15px; font-style: italic; font-weight: 500; color: #fff; box-shadow: 0 0 20px var(--purple-glow); animation: logoPulse 3s ease-in-out infinite; }
+        @keyframes logoPulse { 0%,100% { box-shadow: 0 0 20px var(--purple-glow); } 50% { box-shadow: 0 0 40px var(--purple-glow), 0 0 80px rgba(139,92,246,0.15); } }
+        .nav-logo .slash { color: var(--text-muted); font-weight: 400; margin: 0 2px; }
+        .nav-crumb { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--text-muted); text-decoration: none; transition: color .2s; padding-left: 24px; border-left: 1px solid var(--border); }
+        .nav-crumb:hover { color: var(--text-dim); }
+        .nav-right { display: flex; align-items: center; gap: 28px; }
+        .nav-right a { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; color: var(--text-muted); text-decoration: none; transition: color .2s; }
+        .nav-right a:hover { color: var(--text-dim); }
+        .nav-explore { color: var(--purple) !important; padding: 8px 18px; border: 1px solid rgba(139,92,246,0.3); border-radius: 6px; transition: all .2s !important; }
+        .nav-explore:hover { background: var(--purple-subtle) !important; border-color: var(--purple) !important; color: var(--purple-bright) !important; }
+
+        .btn { font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: .08em; padding: 16px 32px; border-radius: 8px; text-decoration: none; transition: all .25s; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; border: none; }
+        .btn-primary { background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); color: #fff; box-shadow: 0 4px 24px rgba(139,92,246,0.3), inset 0 1px 0 rgba(255,255,255,0.1); }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(139,92,246,0.4), inset 0 1px 0 rgba(255,255,255,0.15); }
+        .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+        .btn-ghost:hover { border-color: var(--text-muted); color: var(--text); background: rgba(255,255,255,0.02); }
+
+        .problem-header { padding: 160px 40px 80px; max-width: 960px; margin: 0 auto; text-align: center; }
+        .problem-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .3em; color: var(--purple); text-transform: uppercase; padding: 8px 20px; border: 1px solid rgba(139,92,246,0.2); border-radius: 100px; margin-bottom: 32px; background: rgba(139,92,246,0.05); display: inline-block; opacity: 0; animation: fadeUp .8s .15s forwards; }
+        .problem-header h1 { font-family: var(--sans); font-size: clamp(40px, 6vw, 72px); font-weight: 900; letter-spacing: -.03em; line-height: 1.05; margin-bottom: 28px; opacity: 0; transform: translateY(20px); animation: fadeUp .8s .3s forwards; }
+        .problem-header h1 .gradient { background: linear-gradient(135deg, var(--text) 0%, var(--purple-bright) 55%, var(--purple) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .problem-formula-hero { font-family: var(--mono); font-size: clamp(18px, 3vw, 26px); color: var(--purple-bright); margin-bottom: 36px; letter-spacing: -.01em; opacity: 0; transform: translateY(20px); animation: fadeUp .8s .45s forwards; }
+        .problem-meta { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--text-dim); text-transform: uppercase; opacity: 0; animation: fadeUp .8s .6s forwards; }
+        .problem-meta span { color: var(--text-muted); margin: 0 10px; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        .section-eyebrow { font-family: var(--mono); font-size: 10px; letter-spacing: .3em; color: var(--purple); text-transform: uppercase; margin-bottom: 16px; }
+        .section-heading { font-size: clamp(26px, 3.5vw, 38px); font-weight: 800; letter-spacing: -.02em; margin-bottom: 24px; line-height: 1.2; }
+        .wrap { max-width: 860px; margin: 0 auto; padding: 0 40px; }
+
+        .prose-section { padding: 60px 0; }
+        .prose-section p { font-size: 16px; color: var(--text-dim); line-height: 1.8; margin-bottom: 20px; }
+        .prose-section p.lead { font-size: 17px; color: var(--text); }
+        .prose-section strong { color: var(--text); font-weight: 600; }
+        .prose-section em { font-style: italic; color: var(--purple-bright); }
+
+        .table-section { padding: 80px 40px; }
+        .table-wrap { max-width: 1000px; margin: 0 auto; }
+        .table-head { text-align: center; margin-bottom: 40px; }
+        .results-table { width: 100%; border-collapse: collapse; font-family: var(--sans); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: var(--surface); }
+        .results-table thead { background: var(--surface-2); }
+        .results-table th { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .15em; color: var(--text-muted); text-transform: uppercase; padding: 16px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+        .results-table th.num, .results-table td.num { text-align: right; font-family: var(--mono); }
+        .results-table td { padding: 16px 20px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-dim); transition: background .2s; }
+        .results-table td.name { color: var(--text); font-weight: 600; font-size: 14px; }
+        .results-table td.highlight { color: var(--purple-bright); font-weight: 700; }
+        .results-table tbody tr:last-child td { border-bottom: none; }
+        .results-table tbody tr:hover td { background: rgba(139,92,246,0.03); }
+        .results-table tbody tr:hover td.name { color: var(--purple-bright); }
+        .table-note { font-family: var(--mono); font-size: 11px; color: var(--text-muted); margin-top: 16px; line-height: 1.7; }
+
+        .errors-section { padding: 80px 0; }
+        .errors-section .intro { font-size: 16px; color: var(--text-dim); line-height: 1.8; margin-bottom: 40px; }
+        .errors-list { display: flex; flex-direction: column; gap: 18px; }
+        .error-card { padding: 28px 32px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); transition: all .3s; opacity: 0; transform: translateY(20px); }
+        .error-card.visible { opacity: 1; transform: translateY(0); }
+        .error-card:hover { border-color: rgba(139,92,246,0.25); }
+        .error-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+        .error-contestant { font-family: var(--sans); font-size: 15px; font-weight: 700; color: var(--text); }
+        .error-tag { font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: .14em; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; background: rgba(139,92,246,0.1); color: var(--purple-bright); border: 1px solid rgba(139,92,246,0.2); }
+        .error-tag.meta { background: rgba(251,191,36,0.1); color: var(--amber); border-color: rgba(251,191,36,0.25); }
+        .error-claim-id { font-family: var(--mono); font-size: 10px; color: var(--text-muted); margin-left: auto; letter-spacing: .08em; }
+        .error-body { font-size: 14.5px; color: var(--text-dim); line-height: 1.75; margin-bottom: 14px; }
+        .error-body code { font-family: var(--mono); font-size: 13px; color: var(--purple-bright); background: rgba(139,92,246,0.06); padding: 2px 6px; border-radius: 3px; }
+        .error-reviewers { font-family: var(--mono); font-size: 10.5px; color: var(--text-muted); letter-spacing: .05em; padding-top: 14px; border-top: 1px solid var(--border); display: flex; gap: 28px; flex-wrap: wrap; }
+        .error-reviewers strong { color: var(--text-dim); font-weight: 600; }
+
+        .tells-section { padding: 80px 0; }
+        .tells-section ul { list-style: none; padding: 0; margin: 24px 0; }
+        .tells-section ul li { padding: 14px 0 14px 28px; position: relative; font-size: 15.5px; color: var(--text-dim); line-height: 1.75; border-bottom: 1px solid var(--border); }
+        .tells-section ul li:last-child { border-bottom: none; }
+        .tells-section ul li::before { content: '&#8250;'; position: absolute; left: 4px; top: 14px; color: var(--purple); font-family: var(--mono); font-weight: 700; }
+
+        .limits-section { padding: 80px 40px; background: var(--surface); position: relative; }
+        .limits-section::before, .limits-section::after { content: ''; position: absolute; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+        .limits-section::before { top: 0; } .limits-section::after { bottom: 0; }
+        .limits-wrap { max-width: 860px; margin: 0 auto; }
+        .limits-head { margin-bottom: 40px; }
+        .limits-head h2 { font-family: var(--mono); font-size: 13px; font-weight: 700; letter-spacing: .24em; color: var(--amber); text-transform: uppercase; margin-bottom: 12px; }
+        .limits-head p { font-size: 14px; color: var(--text-dim); line-height: 1.75; }
+        .limits-box { border: 1px solid rgba(251,191,36,0.2); border-radius: 14px; background: rgba(251,191,36,0.03); padding: 8px 32px; }
+        .limits-item { padding: 24px 0; border-bottom: 1px dashed rgba(251,191,36,0.15); }
+        .limits-item:last-child { border-bottom: none; }
+        .limits-label { font-family: var(--mono); font-size: 10px; font-weight: 700; letter-spacing: .2em; color: var(--amber); text-transform: uppercase; margin-bottom: 10px; }
+        .limits-text { font-size: 14.5px; color: var(--text-dim); line-height: 1.75; }
+
+        .raw-section { padding: 100px 0; text-align: center; }
+        .raw-section p { font-size: 16px; color: var(--text-dim); line-height: 1.8; max-width: 700px; margin: 0 auto 20px; }
+        .raw-link { font-family: var(--mono); font-size: 12px; color: var(--purple); padding: 14px 24px; border: 1px solid rgba(139,92,246,0.25); border-radius: 8px; display: inline-block; margin: 16px 0; transition: all .25s; word-break: break-all; background: rgba(139,92,246,0.04); }
+        .raw-link:hover { border-color: var(--purple); background: rgba(139,92,246,0.08); color: var(--purple-bright); }
+
+        .bottom-nav { padding: 60px 40px 80px; border-top: 1px solid var(--border); }
+        .bottom-nav-wrap { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; gap: 20px; }
+        .bottom-nav a { font-family: var(--mono); font-size: 12px; color: var(--text-muted); text-decoration: none; padding: 20px 28px; border: 1px solid var(--border); border-radius: 10px; transition: all .25s; display: flex; flex-direction: column; gap: 6px; min-width: 240px; }
+        .bottom-nav a:hover { border-color: rgba(139,92,246,0.3); color: var(--text); background: var(--surface); }
+        .bottom-nav .bn-dir { font-size: 9px; letter-spacing: .2em; color: var(--text-muted); text-transform: uppercase; }
+        .bottom-nav .bn-title { font-size: 13px; color: var(--text); letter-spacing: .04em; }
+        .bottom-nav .bn-next { text-align: right; align-items: flex-end; }
+
+        footer { padding: 40px 40px 56px; text-align: center; border-top: 1px solid var(--border); }
+        .footer-links { display: flex; justify-content: center; gap: 28px; margin-bottom: 18px; flex-wrap: wrap; }
+        .footer-links a { font-family: var(--mono); font-size: 11px; color: var(--text-muted); text-decoration: none; transition: color .2s; }
+        .footer-links a:hover { color: var(--text-dim); }
+        .footer-copy { font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: .08em; }
+
+        @media (max-width: 768px) {
+            .nav { padding: 16px 20px; }
+            .nav-right { gap: 16px; }
+            .nav-right a:not(.nav-explore) { display: none; }
+            .nav-crumb { display: none; }
+            .problem-header { padding: 130px 24px 60px; }
+            .wrap { padding: 0 24px; }
+            .results-table th, .results-table td { padding: 12px 12px; font-size: 12.5px; }
+            .results-table th { font-size: 9px; }
+            .error-card { padding: 22px 20px; }
+            .limits-box { padding: 0 22px; }
+            .bottom-nav-wrap { flex-direction: column; }
+            .bottom-nav a { min-width: 0; }
+            .bottom-nav .bn-next { text-align: left; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div class="page">
+    <nav class="nav" id="nav">
+        <div class="nav-left">
+            <a href="/" class="nav-logo"><span class="logo-phi">&#934;</span>MULTIVAC<span class="slash">/</span>PHYSICS</a>
+            <a href="/" class="nav-crumb">&larr; back to index</a>
+        </div>
+        <div class="nav-right">
+            <a href="/#problems">Problems</a>
+            <a href="/#protocol">Protocol</a>
+            <a href="https://github.com/themultivac/multivac-evaluation">GitHub</a>
+            <a href="https://themultivac.com" class="nav-explore">The Multivac &rarr;</a>
+        </div>
+    </nav>
+
+    <header class="problem-header">
+        <div class="problem-eyebrow">The Last Question &mdash; &#8470; 003</div>
+        <h1><span class="gradient">The Casimir Force</span></h1>
+        <div class="problem-formula-hero">F/A = -&pi;&sup2; &#8463; c / (240 d&#8308;)</div>
+        <div class="problem-meta">Quantum Field Theory<span>&middot;</span>Graduate level<span>&middot;</span>7 Contestants<span>&middot;</span>6 Confirmed / 20 Flagged</div>
+    </header>
+
+    <section class="wrap prose-section">
+        <div class="section-eyebrow">The Problem</div>
+        <h2 class="section-heading">A regulator choice. A formally infinite sum. A finite answer.</h2>
+        <p class="lead">Two parallel perfectly conducting plates, separation <em>d</em>, infinite transverse extent. Between them, the quantized electromagnetic field. Each mode contributes <em>&#8463;&omega;/2</em> to the vacuum energy &mdash; and the total is <strong>formally infinite</strong>. The derivation asks the contestant to make sense of that infinity and extract the finite, physically meaningful piece.</p>
+        <p>The derivation therefore turns on a <em>regularization choice</em>: zeta-function regularization, exponential (or Gaussian) cutoff, dimensional regularization, or Euler-Maclaurin summation. Each choice requires a <strong>consistent subtraction</strong> of the free-vacuum contribution, a careful analytic continuation or cutoff-independence argument, and an extraction of the finite part. The final result <em>F/A = -&pi;&sup2;&#8463;c/(240 d&#8308;)</em> is a cornerstone of experimental QFT &mdash; measured in 1997 by Lamoreaux to 5% accuracy.</p>
+        <p>Casimir is therefore <strong>conceptually harder than Schwarzschild</strong> (which is algebraic) or Rindler / Unruh (which is coordinate-chart construction plus mode decomposition). It tests how models handle regularization: do they state their regulator explicitly? Subtract consistently? Show cutoff independence? Confuse the regulator parameter with a physical length?</p>
+    </section>
+
+    <section class="table-section">
+        <div class="table-wrap">
+            <div class="table-head">
+                <div class="section-eyebrow">Results at a glance</div>
+                <h2 class="section-heading" style="margin-bottom:8px;">Seven contestants. One regulator. Many ways to get it wrong.</h2>
+            </div>
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th class="num">Response Length</th>
+                        <th class="num">Claims</th>
+                        <th class="num">Survival Rate</th>
+                        <th class="num">Confirmed / Flagged</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class="name">Claude</td><td class="num">9,364 ch</td><td class="num">52</td><td class="num">&mdash;</td><td class="num highlight">2 / 5</td></tr>
+                    <tr><td class="name">GPT-5.4</td><td class="num">7,820 ch</td><td class="num">52</td><td class="num">&mdash;</td><td class="num highlight">2 / 3</td></tr>
+                    <tr><td class="name">o3-mini</td><td class="num">3,424 ch</td><td class="num">42</td><td class="num">&mdash;</td><td class="num">0 / 5</td></tr>
+                    <tr><td class="name">Gemini</td><td class="num">6,109 ch</td><td class="num">28</td><td class="num">&mdash;</td><td class="num">0 / 2</td></tr>
+                    <tr><td class="name">DeepSeek R1</td><td class="num">8,447 ch</td><td class="num">42</td><td class="num">&mdash;</td><td class="num highlight">1 / 2</td></tr>
+                    <tr><td class="name">Qwen</td><td class="num">5,290 ch</td><td class="num">40</td><td class="num">&mdash;</td><td class="num">0 / 1</td></tr>
+                    <tr><td class="name">Grok</td><td class="num">6,755 ch</td><td class="num">30</td><td class="num">&mdash;</td><td class="num highlight">1 / 2</td></tr>
+                </tbody>
+            </table>
+            <p class="table-note">Survival rates omitted for this problem; per-contestant rates were not computed in this run. Full per-claim verdicts are on GitHub.</p>
+        </div>
+    </section>
+
+    <section class="wrap errors-section">
+        <div class="section-eyebrow">What cross-family confirmation caught</div>
+        <h2 class="section-heading">Six errors that survived independent re-review.</h2>
+        <p class="intro">Of 20 errors flagged by single adversaries, <strong>6 held up under independent re-review by a second adversary from a different model family</strong>. The errors cluster where you'd expect them: confusion between regulator parameters and physical lengths, misapplied Euler-Maclaurin corrections, and overclaims about the rigor of cutoff-independence arguments.</p>
+        <div class="errors-list">
+
+            <article class="error-card" data-reveal>
+                <div class="error-head">
+                    <span class="error-contestant">Claude</span>
+                    <span class="error-tag">cutoff independence</span>
+                    <span class="error-claim-id">claim #27</span>
+                </div>
+                <p class="error-body">Claimed "all higher-order Euler-Maclaurin corrections vanish, justifying the regularization". This overstates the argument. The cutoff-independence of the finite part comes from <em>subtracting the divergent pieces of the free-vacuum contribution</em>, not from the Euler-Maclaurin corrections automatically vanishing. The finite answer is recovered; the justification attached to it is wrong.</p>
+                <div class="error-reviewers"><span><strong>First flag:</strong> DeepSeek R1</span><span><strong>Confirmed by:</strong> GPT-5.4</span></div>
+            </article>
+
+            <article class="error-card" data-reveal>
+                <div class="error-head">
+                    <span class="error-contestant">Claude</span>
+                    <span class="error-tag">Euler-Maclaurin</span>
+                    <span class="error-claim-id">claim #28</span>
+                </div>
+                <p class="error-body">Wrote the Euler-Maclaurin summation correction as <code>-1/180</code>, but omitted the necessary <em>F'''(0)</em> factor. The correction term is a Bernoulli coefficient multiplied by a derivative of the summand evaluated at zero &mdash; dropping the derivative misapplies the correction.</p>
+                <div class="error-reviewers"><span><strong>First flag:</strong> Grok</span><span><strong>Confirmed by:</strong> Gemini</span></div>
+            </article>
+
+            <article class="error-card" data-reveal>
+                <div class="error-head">
+                    <span class="error-contestant">GPT-5.4</span>
+                    <span class="error-tag">regulator vs plate separation</span>
+                    <span class="error-claim-id">claim #33</span>
+                </div>
+                <p class="error-body">Wrote <code>U/A = -&#8463;c a&sup3; / (720&pi;)</code>, confusing the regularization cutoff parameter <em>a</em> with the plate separation <em>d</em>. This is the canonical trap of regularized field theory: the regulator is a <em>book-keeping parameter</em> that must drop out of the final answer. Here the dimensional analysis alone flags it &mdash; and the &pi; coefficient is also wrong.</p>
+                <div class="error-reviewers"><span><strong>First flag:</strong> Claude</span><span><strong>Confirmed by:</strong> DeepSeek R1</span></div>
+            </article>
+
+            <article class="error-card" data-reveal>
+                <div class="error-head">
+                    <span class="error-contestant">GPT-5.4</span>
+                    <span class="error-tag meta">meta-claim</span>
+                    <span class="error-claim-id">claim #48</span>
+                </div>
+                <p class="error-body">A self-correction meta-claim confirmed by two adversaries as "ERROR". On manual re-reading this is a <em>weaker</em> case than the other five &mdash; the model is commenting on its own earlier move rather than making a primary derivation step. We include it in the confirmed count for methodological consistency, but it should be treated as a weaker signal and not as an unambiguous physics error.</p>
+                <div class="error-reviewers"><span><strong>First flag:</strong> Grok</span><span><strong>Confirmed by:</strong> Claude</span></div>
+            </article>
+
+            <article class="error-card" data-reveal>
+                <div class="error-head">
+                    <span class="error-contestant">DeepSeek R1</span>
+                    <span class="error-tag">regulator notation</span>
+                    <span class="error-claim-id">claim #21</span>
+                </div>
+                <p class="error-body">Introduced two different regulator symbols (<em>a</em> and <em>&beta;</em>) in adjacent steps without defining either precisely, then shifted between them inconsistently. The final result is nonetheless correct, but the intermediate derivation is not self-consistent in its regulator bookkeeping.</p>
+                <div class="error-reviewers"><span><strong>First flag:</strong> Qwen</span><span><strong>Confirmed by:</strong> Claude</span></div>
+            </article>
+
+            <article class="error-card" data-reveal>
+                <div class="error-head">
+                    <span class="error-contestant">Grok</span>
+                    <span class="error-tag">zeta regularization argument</span>
+                    <span class="error-claim-id">claim #11</span>
+                </div>
+                <p class="error-body">Wrote the zeta-regularized sum evaluated at <code>Z(-1)</code>. But the parallel-plates mode sum of <em>n&sup3;</em>-like weights analytically continues to <em>&zeta;(-3)</em>, not <em>&zeta;(-1)</em>. <em>&zeta;(-3) = 1/120</em>; <em>&zeta;(-1) = -1/12</em>. Choosing the wrong &zeta; argument changes the final coefficient &mdash; and yet Grok still wrote the correct final <em>&pi;&sup2;/240</em> coefficient, which is inconsistent with what would have followed from the stated argument.</p>
+                <div class="error-reviewers"><span><strong>First flag:</strong> DeepSeek R1</span><span><strong>Confirmed by:</strong> GPT-5.4</span></div>
+            </article>
+
+        </div>
+    </section>
+
+    <section class="wrap tells-section">
+        <div class="section-eyebrow">What this tells us</div>
+        <h2 class="section-heading">The confirmation rate across three problems lands in a narrow band.</h2>
+        <ul>
+            <li><strong>30.0% confirmation rate &mdash; almost exactly matching Rindler (33.3%) and close to Schwarzschild (28.6%).</strong> Our three problems span textbook GR, coordinate-chart-plus-QFT, and regulator-choice QFT &mdash; very different difficulty textures. The confirmation rate is surprisingly stable across them.</li>
+            <li><strong>A ~30% band suggests single-adversary flags systematically overstate real errors by ~3.3&times;.</strong> That ratio is not a universal constant &mdash; it will shift with adversary panel size, prompt calibration, and problem type &mdash; but the current pipeline's false-positive ratio is in that rough ballpark.</li>
+            <li><strong>The "discriminative power scales with problem novelty" hypothesis did not survive bug-fixed re-analysis.</strong> We initially observed a larger spread across the three problems in a buggy Layer 4b run; the fixed run lands them in a narrow band.</li>
+            <li><strong>1 of the 6 Casimir "confirmed" errors was a meta-claim</strong> about self-correction (GPT-5.4 claim #48), which manual review treats as a weaker case. The honest unambiguous-physics-error count is therefore 5 of 20 (25%), which is consistent with our headline that manual review further narrows confirmed-rate claims by roughly 15-25%.</li>
+            <li><strong>The real headline:</strong> cross-family confirmation recovers roughly 30% of flagged errors at the current pipeline settings, and manual review narrows this to 15-25% unambiguous physics errors &mdash; meaningfully better signal than a final-answer check, and meaningfully worse than a symbolic verifier. Which is why Layer 3 is next.</li>
+        </ul>
+    </section>
+
+    <section class="limits-section">
+        <div class="limits-wrap">
+            <div class="limits-head">
+                <h2>Methodology Limitations</h2>
+                <p>Read this before citing any number on this page. These limitations are ordered roughly by how much they should move your priors.</p>
+            </div>
+            <div class="limits-box">
+                <div class="limits-item">
+                    <div class="limits-label">&bull; No symbolic verification</div>
+                    <p class="limits-text">Every verdict in this pipeline is produced by an LLM reading LaTeX. There is no SymPy check, no theorem prover. "Confirmed error" means two LLMs from different families independently flagged a step as wrong; it does not mean the step is mathematically wrong. Layer 3 (symbolic verification) is the top roadmap item.</p>
+                </div>
+                <div class="limits-item">
+                    <div class="limits-label">&bull; Stochastic verdicts</div>
+                    <p class="limits-text">Running Layer 4b twice on the same output can produce different confirmation counts due to LLM sampling variance (observed &plusmn;20% across reruns). Reported numbers are single-run.</p>
+                </div>
+                <div class="limits-item">
+                    <div class="limits-label">&bull; Parse failure rate</div>
+                    <p class="limits-text">Approximately 33% of Layer 4b calls returned unparseable responses (primarily from o3-mini on OpenRouter). Parse failures are treated as non-confirmations &mdash; which systematically under-counts real errors.</p>
+                </div>
+                <div class="limits-item">
+                    <div class="limits-label">&bull; Manual verification required</div>
+                    <p class="limits-text">Confirmed errors should be manually spot-checked before use. Not all "confirmed" errors are unambiguous physics errors &mdash; some are notation or convention disagreements between adversaries, and at least one Casimir "confirmed" error is a meta-claim about self-correction rather than a primary derivation step.</p>
+                </div>
+                <div class="limits-item">
+                    <div class="limits-label">&bull; Ground truth in prompt</div>
+                    <p class="limits-text">The final-answer check is a regex for the formula the problem statement asked the model to derive. Passing this check means the model produced a matching formula, not that the derivation constitutes a valid proof.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap raw-section">
+        <div class="section-eyebrow">Raw Data</div>
+        <h2 class="section-heading">Audit every step.</h2>
+        <p>Every Layer 1 response, the full claim decomposition, every Layer 4 verdict, and every Layer 4b confirmation for this problem is on GitHub:</p>
+        <a class="raw-link" href="https://github.com/themultivac/multivac-evaluation/tree/main/outputs/PHYSICS-SYNTH-casimir-v0-20260418-180335">github.com/themultivac/multivac-evaluation/tree/main/outputs/PHYSICS-SYNTH-casimir-v0-20260418-180335</a>
+        <p style="margin-top:28px;">If you find an error in our methodology or our physics, email <a href="mailto:yash@themultivac.com" style="color:var(--purple); text-decoration: none;">yash@themultivac.com</a>. We would rather be corrected than be wrong.</p>
+    </section>
+
+    <nav class="bottom-nav">
+        <div class="bottom-nav-wrap">
+            <a href="rindler-unruh.html">
+                <span class="bn-dir">&larr; Prev</span>
+                <span class="bn-title">Unruh Temperature &#8470;002</span>
+            </a>
+            <a href="/" class="bn-next">
+                <span class="bn-dir">Next &rarr;</span>
+                <span class="bn-title">Back to index</span>
+            </a>
+        </div>
+    </nav>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://themultivac.com">The Multivac</a>
+            <a href="https://github.com/themultivac/multivac-evaluation">GitHub</a>
+            <a href="https://themultivac.substack.com">Substack</a>
+            <a href="https://x.com/themultivac_">X / Twitter</a>
+            <a href="mailto:yash@themultivac.com">Email</a>
+        </div>
+        <div class="footer-copy">Independent evaluation &middot; Open data &middot; No affiliations</div>
+    </footer>
+</div>
+
+<script>
+const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');let particles=[],mouse={x:-1e3,y:-1e3};
+function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}resize();
+window.addEventListener('resize',resize);document.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY});
+class Particle{constructor(){this.reset()}reset(){this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;this.size=Math.random()*1.5+.3;this.speedX=(Math.random()-.5)*.15;this.speedY=(Math.random()-.5)*.15;this.opacity=Math.random()*.25+.05}update(){this.x+=this.speedX;this.y+=this.speedY;const dx=mouse.x-this.x,dy=mouse.y-this.y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<150){this.x-=dx*.005;this.y-=dy*.005;this.opacity=Math.min(this.opacity+.01,.5)}if(this.x<0||this.x>canvas.width||this.y<0||this.y>canvas.height)this.reset()}draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fillStyle=`rgba(139,92,246,${this.opacity})`;ctx.fill()}}
+for(let i=0;i<80;i++)particles.push(new Particle());
+function animateParticles(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{p.update();p.draw()});for(let i=0;i<particles.length;i++)for(let j=i+1;j<particles.length;j++){const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<100){ctx.beginPath();ctx.moveTo(particles[i].x,particles[i].y);ctx.lineTo(particles[j].x,particles[j].y);ctx.strokeStyle=`rgba(139,92,246,${.04*(1-dist/100)})`;ctx.lineWidth=.5;ctx.stroke()}}requestAnimationFrame(animateParticles)}animateParticles();
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50)});
+const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}})},{threshold:.15});
+document.querySelectorAll('[data-reveal]').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
